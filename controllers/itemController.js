@@ -1,7 +1,24 @@
 const Item = require("../models/item");
-
+const Category = require("../models/category");
+const async = require("async");
 exports.index = (req, res) => {
-    res.send("Not implemented");
+    async.parallel(
+        {
+            item_count(callback) {
+                Item.countDocuments({}, callback);
+            },
+            category_count(callback) {
+                Category.countDocuments({}, callback);
+            },
+        },
+        (err, results) => {
+            res.render("index", {
+                title: "Inventory App",
+                error: err,
+                data: results,
+            });
+        }
+    );
 };
 // Display list of all items.
 exports.item_list = (req, res) => {

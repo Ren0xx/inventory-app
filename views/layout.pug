@@ -1,7 +1,30 @@
 doctype html
-html
+html(lang='en' data-theme='winter')
   head
     title= title
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    script(src="https://code.jquery.com/jquery-3.5.1.slim.min.js", integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj", crossorigin="anonymous")
+    script(src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp")
+    link(href="https://cdn.jsdelivr.net/npm/daisyui@2.51.0/dist/full.css" rel="stylesheet" type="text/css") 
+
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div(class='grid grid-cols-6')
+        div(class='col-span-1 prose')
+          block sidebar
+            ul(class='sidebar-nav')
+              li
+                a(href='/shop') Home
+              li
+                a(href='/shop/items') All items 
+              li
+                a(href='/shop/categories') All categories 
+              div(class='divider')
+              li
+                a(href='/shop/item/create') Create new item
+              li
+                a(href='/shop/category/create') Create new category
+
+        div(class='col-span-5 prose')
+          block content
