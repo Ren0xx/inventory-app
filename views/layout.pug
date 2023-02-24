@@ -10,7 +10,7 @@ html(lang='en' data-theme='winter')
 
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    div(class='grid grid-cols-6')
+    div(class='grid grid-cols-6 gap-2')
         div(class='col-span-1 prose')
           block sidebar
             ul(class='sidebar-nav')
@@ -26,5 +26,5 @@ html(lang='en' data-theme='winter')
               li
                 a(href='/shop/category/create') Create new category
 
-        div(class='col-span-5 prose')
+        div(class='col-span-5 prose justify-center align-center')
           block content

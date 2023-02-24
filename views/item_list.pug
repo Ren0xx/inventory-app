@@ -1,0 +1,11 @@
+extends layout 
+
+block content
+    h1=title
+
+    div
+        ul 
+        each item in items 
+            li 
+                a(href=item.url) #{item.name} - #{item.price}$
+                

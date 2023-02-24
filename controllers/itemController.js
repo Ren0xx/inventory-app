@@ -1,6 +1,7 @@
 const Item = require("../models/item");
 const Category = require("../models/category");
 const async = require("async");
+const mongoose = require("mongoose");
 exports.index = (req, res) => {
     async.parallel(
         {
@@ -22,12 +23,40 @@ exports.index = (req, res) => {
 };
 // Display list of all items.
 exports.item_list = (req, res) => {
-    res.send("NOT IMPLEMENTED: item list");
+    Item.find()
+        .sort([["name", "ascending"]])
+        .limit(25)
+        .exec(function (err, items) {
+            if (err) return next(err);
+            res.render("item_list", {
+                title: "Items",
+                items: items,
+            });
+        });
 };
 
 // Display detail page for a specific item.
-exports.item_detail = (req, res) => {
-    res.send(`NOT IMPLEMENTED: item detail: ${req.params.id}`);
+exports.item_detail = (req, res, next) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    async.parallel(
+        {
+            item(callback) {
+                Item.findById(id).populate("category").exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            if (results.item == null) {
+                const err = new Error("Item not found");
+                err.status = 404;
+                return next(err);
+            }
+            res.render("item_detail", {
+                title: results.item.name,
+                item: results.item,
+            });
+        }
+    );
 };
 
 // Display item create form on GET.
