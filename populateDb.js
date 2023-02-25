@@ -126,7 +126,7 @@ function createItems(cb) {
                     "A comfortable and casual T-shirt for everyday wear",
                     19.99,
                     50,
-                    categories[0],
+                    categories[2],
                     callback
                 );
             },
@@ -136,7 +136,7 @@ function createItems(cb) {
                     "A stylish and elegant dress for special occasions",
                     99.99,
                     15,
-                    categories[0],
+                    categories[2],
                     callback
                 );
             },
@@ -146,7 +146,7 @@ function createItems(cb) {
                     "Lightweight and comfortable shoes for running",
                     79.99,
                     20,
-                    categories[1],
+                    categories[2],
                     callback
                 );
             },

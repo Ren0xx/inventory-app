@@ -1,5 +1,7 @@
+const { default: mongoose } = require("mongoose");
 const Category = require("../models/category");
-
+const Item = require("../models/item");
+const async = require("async");
 // Display list of all categorys.
 exports.category_list = (req, res) => {
     Category.find()
@@ -14,8 +16,31 @@ exports.category_list = (req, res) => {
 };
 
 // Display detail page for a specific category.
-exports.category_detail = (req, res) => {
-    res.send(`NOT IMPLEMENTED: category detail: ${req.params.id}`);
+exports.category_detail = (req, res, next) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    async.parallel(
+        {
+            category(callback) {
+                Category.findById(id).exec(callback);
+            },
+            items_in_category(callback) {
+                Item.find({ category: id }).exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            if (results.category == null) {
+                const err = new Error("Category not found.");
+                err.status = 404;
+                return next(err);
+            }
+            res.render("category_detail", {
+                title: results.category.name,
+                category: results.category,
+                items_in_category: results.items_in_category,
+            });
+        }
+    );
 };
 
 // Display category create form on GET.

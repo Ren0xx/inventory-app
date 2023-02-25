@@ -1,5 +1,5 @@
 doctype html
-html(lang='en' data-theme='winter')
+html(lang='en' data-theme='garden')
   head
     title= title
     meta(charset='utf-8')
@@ -9,22 +9,22 @@ html(lang='en' data-theme='winter')
     link(href="https://cdn.jsdelivr.net/npm/daisyui@2.51.0/dist/full.css" rel="stylesheet" type="text/css") 
 
     link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    div(class='grid grid-cols-6 gap-2')
-        div(class='col-span-1 prose')
+  body(class='h-screen')
+    div(class='grid grid-cols-6 gap-2 h-full')
+        div(class='col-span-1 prose menu bg-base-100')
           block sidebar
-            ul(class='sidebar-nav')
+            ul
               li
-                a(href='/shop') Home
+                a(href='/shop' class='no-underline') Home
               li
-                a(href='/shop/items') All items 
+                a(href='/shop/items' class='no-underline') All items 
               li
-                a(href='/shop/categories') All categories 
+                a(href='/shop/categories' class='no-underline') All categories 
               div(class='divider')
               li
-                a(href='/shop/item/create') Create new item
+                a(href='/shop/item/create' class='no-underline') Create new item
               li
-                a(href='/shop/category/create') Create new category
+                a(href='/shop/category/create' class='no-underline') Create new category
 
         div(class='col-span-5 prose justify-center align-center')
           block content

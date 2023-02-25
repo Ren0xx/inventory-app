@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+  h1 #{category.name} 
+  h3  #{category.description}
+  unless items_in_category.length
+    p This category has no items.  
+  else
+    each item in items_in_category
+        div(class="my-2")
+            a(href=item.url) #{item.name} - #{item.price}$ 
+  div(class='divider') 
+  div
+    p 
+      a(href=category.url+'/delete') Delete category 
+    p 
+      a(href=category.url+'/update') Update category 
