@@ -1,0 +1,29 @@
+extends layout
+
+block content
+
+    h1 #{title}
+
+    form(method='POST' action='' class='flex gap-4 h-max flex-col')
+        <div class="form-control ">
+            <label class="label">
+                <span class="label-text text-2xl">Category: </span>
+            </label>
+            <label class="input-group">
+                <span>Category</span>
+                input(type="text" placeholder="Clothing, Books, etc."  class="input input-bordered w-80" name='description' value=(undefined===category? '' : category.description))
+            </label>
+
+            <label class="label">
+                <span class="label-text text-2xl">Description: </span>
+            </label>
+            <label class="input-group">
+                <span>Description</span>
+                input(type="text" placeholder="What you can find in this category, etc." class="input input-bordered w-64" name='name' value=(undefined===category? '' : category.name))
+            </label>
+        </div>
+        <button type="submit" class="btn btn-success rounded-full ">Create Category</button>
+    if errors 
+        ul 
+            for error in errors 
+                li!= error.msg            
