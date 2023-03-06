@@ -2,12 +2,23 @@ extends layout
 
 block content
 
-  h1 #{item.name} - #{item.price}$
-  h3 #{item.category.name}
-  p  #{item.description}
-   
-  div
-    p 
-      a(href=item.url+'/delete') Delete item  
-    p 
-      a(href=item.url+'/update') Update item
+  h1 #{title}: #{category.name} 
+
+  if items_with_category.length
+    p #[strong Delete the following items before deleting this category] 
+
+    div(class='ml-4 mt-4')
+      h4 Items
+      dl 
+      each item in items_with_category 
+        dt 
+          a(href=item.url) #{item.name}
+        dd #{item.description}
+  else 
+    p Do you really want to delete this category `#{category.name}`?
+
+    form(method='POST', action='')
+      div.form-group
+        input(type='hidden', name='categoryid', required=true, value=category._id)
+
+      button.btn.btn-info(type='submit') Delete 

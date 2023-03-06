@@ -85,13 +85,57 @@ exports.category_create_post = [
 ];
 
 // Display category delete form on GET.
-exports.category_delete_get = (req, res) => {
-    res.send("NOT IMPLEMENTED: category delete GET");
+exports.category_delete_get = (req, res, next) => {
+    async.parallel(
+        {
+            category(callback) {
+                Category.findById(req.params.id).exec(callback);
+            },
+            items_with_category(callback) {
+                Item.find({ category: req.params.id }).exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            if (results.category == null) {
+                res.redirect("/shop/categories");
+            }
+            res.render("category_delete", {
+                title: "Delete Catergory",
+                category: results.category,
+                items_with_category: results.items_with_category,
+            });
+        }
+    );
 };
 
 // Handle category delete on POST.
 exports.category_delete_post = (req, res) => {
-    res.send("NOT IMPLEMENTED: category delete POST");
+    async.parallel(
+        {
+            category(callback) {
+                Category.findById(req.params.id).exec(callback);
+            },
+            items_with_category(callback) {
+                Item.find({ category: req.params.id }).exec(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            if (results.items_with_category > 0) {
+                res.render("category_delete", {
+                    title: "Delete Genre",
+                    category: results.category,
+                    item_with_category: results.item_with_category,
+                });
+                return;
+            }
+            Category.findByIdAndDelete(req.body.categoryid, (err) => {
+                if (err) return next(err);
+                res.redirect("/shop/categories");
+            });
+        }
+    );
 };
 
 // Display category update form on GET.
