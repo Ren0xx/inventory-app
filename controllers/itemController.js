@@ -2,6 +2,7 @@ const Item = require("../models/item");
 const Category = require("../models/category");
 const async = require("async");
 const mongoose = require("mongoose");
+const { body, validationResult } = require("express-validator");
 exports.index = (req, res) => {
     async.parallel(
         {
@@ -60,14 +61,81 @@ exports.item_detail = (req, res, next) => {
 };
 
 // Display item create form on GET.
-exports.item_create_get = (req, res) => {
-    res.send("NOT IMPLEMENTED: item create GET");
+exports.item_create_get = (req, res, next) => {
+    async.parallel(
+        {
+            categories(callback) {
+                Category.find(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            res.render("item_form", {
+                title: "Create Item",
+                categories: results.categories,
+            });
+        }
+    );
 };
 
 // Handle item create on POST.
-exports.item_create_post = (req, res) => {
-    res.send("NOT IMPLEMENTED: item create POST");
-};
+exports.item_create_post = [
+    (req, res, next) => {
+        if (!Array.isArray(req.body.category)) {
+            req.body.category =
+                typeof req.body.category === "undefined"
+                    ? []
+                    : [req.body.category];
+        }
+        next();
+    },
+
+    body("name", "Name must not be empty").trim().isLength({ min: 1 }).escape(),
+    body("description", "Description must not be empty")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("price", "Price must not be empty")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("category.*").escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const item = new Item({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            number_in_stock: 1,
+            category: req.body.category,
+        });
+        if (!errors.isEmpty()) {
+            async.parallel(
+                {
+                    categories(callback) {
+                        Category.find(callback);
+                    },
+                },
+                (err, results) => {
+                    if (err) return next(err);
+                    res.render("item_form", {
+                        title: "Create Item",
+                        categories: results.categories,
+                        item: item,
+                        errors: errors.array(),
+                    });
+                }
+            );
+            return;
+        }
+
+        item.save((err) => {
+            if (err) return next(err);
+            res.redirect(item.url);
+        });
+    },
+];
 
 // Display item delete form on GET.
 exports.item_delete_get = (req, res) => {

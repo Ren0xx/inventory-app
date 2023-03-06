@@ -11,7 +11,7 @@ block content
             </label>
             <label class="input-group">
                 <span>Category</span>
-                input(type="text" placeholder="Clothing, Books, etc."  class="input input-bordered w-80" name='description' value=(undefined===category? '' : category.description))
+                input(type="text" placeholder="Clothing, Books, etc."  class="input input-bordered w-80" name='name' value=(undefined===category? '' : category.description))
             </label>
 
             <label class="label">
@@ -19,7 +19,7 @@ block content
             </label>
             <label class="input-group">
                 <span>Description</span>
-                input(type="text" placeholder="What you can find in this category, etc." class="input input-bordered w-64" name='name' value=(undefined===category? '' : category.name))
+                input(type="text" placeholder="What you can find in this category, etc." class="input input-bordered w-64" name='description' value=(undefined===category? '' : category.name))
             </label>
         </div>
         <button type="submit" class="btn btn-success rounded-full ">Create Category</button>

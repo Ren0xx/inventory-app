@@ -1,0 +1,45 @@
+extends layout
+
+block content
+
+    h1 #{title}
+
+    form(method='POST' action='' class='flex gap-4 h-max flex-col')
+        <div class="form-control ">
+            <label class="label">
+                <span class="label-text text-2xl">Item Name: </span>
+            </label>
+            <label class="input-group">
+                <span>Item name </span>
+                input(type="text" placeholder='Item name' class="input input-bordered w-64" name='name' value=(undefined===item? '' : item.name))
+            </label>
+
+            <label class="label">
+                <span class="label-text text-2xl">Description: </span>
+            </label>
+            <label class="input-group">
+                <span>Description</span>
+                input(type="text" placeholder="Write something about this item." class="input input-bordered w-64" name='description' value=(undefined===item? '' : item.description))
+            </label>
+            <label class="label">
+                <span class="label-text text-2xl">Enter amount</span>
+            </label>
+            <label class="input-group">
+                <span>Price</span>
+                input(type="number" placeholder="10" class="input input-bordered" name='price' value=(undefined===item ? '' : item.price)) 
+                <span>USD</span>
+            </label>
+
+            <label class="label">
+                <span class="label-text text-2xl">Category: </span>
+            </label>
+            for category in categories
+                div(class='inline')
+                    input(value=category._id name='category' type='checkbox' id=category._id)
+                    label(for=category.id) #{category.name}
+        </div>
+        <button type="submit" class="btn btn-success rounded-full ">Create Item</button>
+    if errors 
+        ul  
+            for error in errors 
+                li!= error.msg            
