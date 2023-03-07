@@ -3,7 +3,9 @@ extends layout
 block content
 
   h1 #{item.name} - #{item.price}$
-  h3 #{item.category.name}
+  div(class='flex flex-row')
+    each category in item.category
+      p #{category.name},  
   p  #{item.description}
    
   div

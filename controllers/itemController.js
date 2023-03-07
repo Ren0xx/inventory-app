@@ -175,11 +175,106 @@ exports.item_delete_post = (req, res) => {
 };
 
 // Display item update form on GET.
-exports.item_update_get = (req, res) => {
-    res.send("NOT IMPLEMENTED: item update GET");
+exports.item_update_get = (req, res, next) => {
+    const id = mongoose.Types.ObjectId(req.params.id);
+    async.parallel(
+        {
+            item(callback) {
+                Item.findById(id).populate("category").exec(callback);
+            },
+            categories(callback) {
+                Category.find(callback);
+            },
+        },
+        (err, results) => {
+            if (err) return next(err);
+            if (results.item == null) {
+                const err = new Error("Item not found");
+                err.status = 404;
+                return next(err);
+            }
+            for (const category of results.categories) {
+                for (const itemCategory of results.item.category) {
+                    if (
+                        category._id.toString() == itemCategory._id.toString()
+                    ) {
+                        category.checked = "true";
+                    }
+                }
+            }
+            res.render("item_form", {
+                title: "Update Book",
+                categories: results.categories,
+                item: results.item,
+            });
+        }
+    );
 };
 
 // Handle item update on POST.
-exports.item_update_post = (req, res) => {
-    res.send("NOT IMPLEMENTED: item update POST");
-};
+exports.item_update_post = [
+    (req, res, next) => {
+        if (!Array.isArray(req.body.category)) {
+            req.body.category =
+                typeof req.body.category === "undefined"
+                    ? []
+                    : [req.body.category];
+        }
+        next();
+    },
+
+    body("name", "Name must not be empty").trim().isLength({ min: 1 }).escape(),
+    body("description", "Description must not be empty")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("price", "Price must not be empty")
+        .trim()
+        .isLength({ min: 1 })
+        .escape(),
+    body("category.*").escape(),
+    (req, res, next) => {
+        const errors = validationResult(req);
+
+        const item = new Item({
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            number_in_stock: 1,
+            category:
+                typeof req.body.category === "undefined"
+                    ? []
+                    : req.body.category,
+            _id: req.params.id,
+        });
+        if (!errors.isEmpty()) {
+            async.parallel(
+                {
+                    categories(callback) {
+                        Category.find(callback);
+                    },
+                },
+                (err, results) => {
+                    if (err) return next(err);
+
+                    for (const category in results.categories) {
+                        category.checked = "true";
+                    }
+                    res.render("item_form", {
+                        title: "Create Item",
+                        categories: results.categories,
+                        item: item,
+                        errors: errors.array(),
+                    });
+                }
+            );
+            return;
+        }
+
+        Item.findByIdAndUpdate(req.params.id, item, {}, (err, theitem) => {
+            if (err) return next(err);
+
+            res.redirect(theitem.url);
+        });
+    },
+];

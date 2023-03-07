@@ -35,10 +35,10 @@ block content
             </label>
             for category in categories
                 div(class='inline')
-                    input(value=category._id name='category' type='checkbox' id=category._id)
+                    input(value=category._id name='category' type='checkbox' id=category._id checked=category.checked)
                     label(for=category.id) #{category.name}
         </div>
-        <button type="submit" class="btn btn-success rounded-full ">Create Item</button>
+        <button type="submit" class="btn btn-success rounded-full ">Submit</button>
     if errors 
         ul  
             for error in errors 
