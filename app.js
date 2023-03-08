@@ -3,6 +3,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+require("dotenv").config();
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -12,8 +13,8 @@ var app = express();
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB =
-    "mongodb+srv://admin:admin@myatlasclusteredu.wsobtry.mongodb.net/inventory?retryWrites=true&w=majority";
+const dev_db_url = process.env.MONGO_URL_DEV;
+const mongoDB = process.env.MONGO_URI || dev_db_url ;
 main()
     .then(() => {
         console.log("connected to mongoDB");
