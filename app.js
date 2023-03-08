@@ -14,7 +14,7 @@ var app = express();
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const dev_db_url = process.env.MONGO_URL_DEV;
-const mongoDB = process.env.MONGO_URI || dev_db_url ;
+const mongoDB = process.env.MONGO_URL || dev_db_url;
 main()
     .then(() => {
         console.log("connected to mongoDB");
